@@ -1,6 +1,6 @@
 # ESP32 Smart Robot Controlled via Firebase and Android Application
 
-![Robot](robot.jpg)
+![Robot]([robot.jpg](https://github.com/ELamraouihamza/smart-robot-esp32-app-control/blob/main/final.jpeg?raw=true))
 
 ## Project Overview
 
