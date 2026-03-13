@@ -1,0 +1,210 @@
+ robot_control.ino
+
+   
+#include <Adafruit_Sensor.h>
+#include <DHT.h>
+#include <Firebase_ESP_Client.h>
+#include <WiFi.h>
+#include <ESP32Servo.h>
+#include <NewPing.h>
+// === Définition des constantes ===
+#define TRIG 5
+#define ECHO 18
+#define DISTANCE_MAX 200
+#define DHTPIN 14
+#define DHTTYPE DHT11
+#define WIFI_SSID "PFE"
+#define WIFI_PASSWORD "pfe 2025"
+#define API_KEY "AIzaSyBZ4NlNB20J50epZCwkqmo_SuifywXuY8U"
+#define DATABASE_URL "https://dht11seneer-default-rtdb.firebaseio.com/"
+#define USER_EMAIL "helamraoui89@gmail.com"
+#define USER_PASSWORD "12345678"
+// === Objets ===
+DHT dht(DHTPIN, DHTTYPE);
+NewPing sonar(TRIG, ECHO, DISTANCE_MAX);
+Servo monServo;
+FirebaseData fbdo;
+FirebaseAuth auth;
+FirebaseConfig config;
+// === Variables globales ===
+int distance;
+int gazPin = 27;
+const int servoPin = 17;
+unsigned long sendDataPrevMillis = 0;
+unsigned long prevMillis = 0;
+// Moteur L298N
+int IN1 = 23;
+int IN2 = 22;
+int IN3 = 21;
+int IN4 = 19;
+// === Fonctions de base ===
+void avancer() {
+digitalWrite(IN1, HIGH);
+digitalWrite(IN2, LOW);
+digitalWrite(IN3, LOW);
+digitalWrite(IN4, HIGH);71
+}
+void reculer() {
+digitalWrite(IN1, LOW);
+digitalWrite(IN2, HIGH);
+digitalWrite(IN3, HIGH);
+digitalWrite(IN4, LOW);
+}
+void arreterRobot() {
+digitalWrite(IN1, LOW);
+digitalWrite(IN2, LOW);
+digitalWrite(IN3, LOW);
+digitalWrite(IN4, LOW);
+}
+void tournerGauche() {
+digitalWrite(IN1, LOW);
+digitalWrite(IN2, HIGH);
+digitalWrite(IN3, LOW);
+digitalWrite(IN4, HIGH);
+delay(300);
+arreterRobot();
+}
+void tournerDroite() {
+digitalWrite(IN1, HIGH);
+digitalWrite(IN2, LOW);
+digitalWrite(IN3, HIGH);
+digitalWrite(IN4, LOW);
+delay(300);
+arreterRobot();
+}
+// === Fonctions capteurs ===
+int lireDistance() {
+delay(70);
+int cm = sonar.ping_cm();
+if (cm == 0) cm = 250;
+return cm;
+}
+int regarderDroite() {
+monServo.write(0);
+delay(200);
+int dist = lireDistance();
+delay(100);
+monServo.write(90);
+return dist;
+}72
+int regarderGauche() {
+monServo.write(180);
+delay(200);
+int dist = lireDistance();
+delay(100);
+monServo.write(90);
+return dist;
+}
+// === Fonction d'autonomie ===
+void aut() {
+int distanceDroite = 0;
+int distanceGauche = 0;
+delay(50);
+distance = lireDistance();
+Serial.print("Distance : ");
+Serial.println(distance);
+if (distance <= 100) {
+arreterRobot();
+delay(100);
+reculer();
+delay(100);
+arreterRobot();
+delay(100);
+distanceDroite = regarderDroite();
+delay(300);
+distanceGauche = regarderGauche();
+delay(300);
+if (distanceDroite >= distanceGauche) {
+tournerDroite();
+} else {
+tournerGauche();
+}
+delay(300);
+arreterRobot();
+} else {
+avancer();
+}
+}
+// === Setup ===
+void setup() {
+Serial.begin(115200);
+pinMode(IN1, OUTPUT);
+pinMode(IN2, OUTPUT);73
+pinMode(IN3, OUTPUT);
+pinMode(IN4, OUTPUT);
+pinMode(TRIG, OUTPUT);
+pinMode(ECHO, INPUT);
+pinMode(gazPin, INPUT);
+dht.begin();
+monServo.setPeriodHertz(50);
+monServo.attach(servoPin);
+monServo.write(90);
+distance = lireDistance();
+delay(100);
+WiFi.begin(WIFI_SSID, WIFI_PASSWORD);
+Serial.print("Connecting to Wi-Fi");
+while (WiFi.status() != WL_CONNECTED) {
+Serial.print(".");
+delay(300);
+}
+Serial.println();
+Serial.print("Connected with IP: ");
+Serial.println(WiFi.localIP());
+config.api_key = API_KEY;
+auth.user.email = USER_EMAIL;
+auth.user.password = USER_PASSWORD;
+config.database_url = DATABASE_URL;
+Firebase.reconnectNetwork(true);
+fbdo.setBSSLBufferSize(4096, 1024);
+fbdo.setResponseSize(2048);
+Firebase.begin(&config, &auth);
+Firebase.setDoubleDigits(5);
+config.timeout.serverResponse = 10 * 1000;
+}
+// === Loop ===
+void loop() {
+// === Lecture de la commande ===
+if (Firebase.ready() && (millis() - sendDataPrevMillis > 100 || sendDataPrevMillis
+== 0)) {
+sendDataPrevMillis = millis();
+String commande = "";
+if (Firebase.RTDB.getString(&fbdo, "/command/command", &commande)) {
+commande.replace("\"", "");
+commande.replace("\\", "");
+commande.trim();
+Serial.println("Commande reçue : " + commande);74
+if (commande == "avance") {
+avancer();
+} else if (commande == "Droit") {
+tournerDroite();
+} else if (commande == "gauche") {
+tournerGauche();
+} else if (commande == "arrier") {
+reculer();
+} else if (commande == "stoop") {
+arreterRobot();
+} else if (commande == "auto") {
+aut();
+}
+}
+}
+// === Mise à jour Firebase avec capteurs ===
+if (Firebase.ready() && millis() - prevMillis > 1000) {
+prevMillis = millis();
+int h = dht.readHumidity();
+int t = dht.readTemperature();
+bool gazDetecte = (digitalRead(gazPin) == 0);
+bool success = Firebase.RTDB.setBool(&fbdo, "/DHT/GAZ", gazDetecte);
+Serial.printf("GAZ: %s\n", success ? "ok" : fbdo.errorReason().c_str());
+Serial.print("Température: ");
+Serial.print(t);
+Serial.println(" °C");
+Serial.print("Humidité: ");
+Serial.print(h);
+Serial.println(" %");
+if (!isnan(h) && !isnan(t)) {
+Firebase.RTDB.setFloat(&fbdo, "/DHT/Temperature", t);
+Firebase.RTDB.setFloat(&fbdo, "/DHT/Humidity", h);
+}
+}
+}
