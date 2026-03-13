@@ -1,7 +1,6 @@
 # ESP32 Smart Robot Controlled via Firebase and Android Application
 
-![Robot]([robot.jpg](https://github.com/ELamraouihamza/smart-robot-esp32-app-control/blob/main/final.jpeg?raw=true))
-
+![https://github.com/ELamraouihamza/smart-robot-esp32-app-control/blob/main/final.jpeg?raw=true](final.jpeg)
 ## Project Overview
 
 This project presents a **smart mobile robot based on ESP32** that can be monitored and controlled remotely using an **Android mobile application**.  
