@@ -47,7 +47,7 @@ The project uses **Firebase Realtime Database** to establish communication betwe
 The ESP32 sends sensor data to Firebase, and the application reads this data to display it to the user.  
 At the same time, control commands from the application are written to Firebase and read by the ESP32 to control the robot's movement.
 
-![Firebase Database](firebase.jpg)
+![https://raw.githubusercontent.com/ELamraouihamza/smart-robot-esp32-app-control/67bc5d5be45d5b0c25d3ab919b628926b7417f7d/firebase.jpeg](firebase.jpeg)
 
 ---
 
