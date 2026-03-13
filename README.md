@@ -1,6 +1,6 @@
 # smart-robot-esp32-app-control
+![[images/robot.jpg](https://github.com/ELamraouihamza/smart-robot-esp32-app-control/blob/main/final.jpeg?raw=true)](final.jpeg)
 
-![image alt]([images/robot.jpg](https://github.com/ELamraouihamza/smart-robot-esp32-app-control/blob/main/final.jpeg?raw=true))
 ## Project Description
 This project presents an IoT smart robot based on the ESP32 microcontroller.  
 The robot can be monitored and controlled through a mobile application developed using MIT App Inventor.
