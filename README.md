@@ -54,6 +54,7 @@ At the same time, control commands from the application are written to Firebase 
 ## System Operation
 
 The overall operation of the system can be summarized as follows:
+![https://github.com/ELamraouihamza/smart-robot-esp32-app-control/blob/main/organigramme.jpeg?raw=true](organigramme.jpeg)
 
 1. The ESP32 reads data from the sensors.
 2. Sensor data is sent to Firebase in real time.
