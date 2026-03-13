@@ -20,7 +20,7 @@ The system demonstrates how **IoT technologies** can be used to connect embedded
 The following diagram illustrates the general architecture of the project, including the ESP32 microcontroller, sensors, motors, and communication with Firebase and the mobile application.
 
 
-![https://github.com/ELamraouihamza/smart-robot-esp32-app-control/blob/b1380b030e9748063ec332ad21a295a19e78f5b2/realisation.jpeg](final.jpeg)
+![https://github.com/ELamraouihamza/smart-robot-esp32-app-control/blob/main/realisation.jpeg?raw=true](final.jpeg)
 
 ---
 
