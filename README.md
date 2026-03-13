@@ -36,7 +36,7 @@ The first screen of the application contains three main options:
 - **Manual Control**: Allows the user to move the robot in different directions.
 - **Auto Mode**: Activates the autonomous navigation mode.
 
-![https://github.com/ELamraouihamza/smart-robot-esp32-app-control/blob/main/application.png?raw=true](application.jpg)
+![https://github.com/ELamraouihamza/smart-robot-esp32-app-control/blob/main/application.png?raw=true](application.png)
 
 ---
 
