@@ -76,7 +76,7 @@ The following video shows the robot in operation, including:
 
 🎥 **Project Demonstration Video**
 
-[Watch the video](VIDEO_LINK_HERE)
+[[Watch the video](VIDEO_LINK_HERE)](https://www.linkedin.com/posts/hamza-el-amraoui-a21136389_projet-de-fin-d%C3%A9tudes-licence-en-sciences-activity-7425270267087695872-tGtV?utm_source=social_share_send&utm_medium=member_desktop_web&rcm=ACoAAF-X_TkBOs32neQd_KNsYakH6ORcJmOTkmY)
 
 ---
 
